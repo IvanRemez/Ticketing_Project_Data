@@ -37,7 +37,7 @@ public class RoleServiceImpl implements RoleService {
     // ^^ class injected here
 
         return roleList.stream()
-                .map(roleMapper::converToDto).collect(Collectors.toList());
+                .map(roleMapper::convertToDto).collect(Collectors.toList());
     }
 
     @Override

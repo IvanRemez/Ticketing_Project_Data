@@ -8,7 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationPropertiesBinding
+//@ConfigurationPropertiesBinding - done automatically in new Spring version
 public class RoleDtoConverter implements Converter<String, RoleDTO> {
 
     RoleService roleService;

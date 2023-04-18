@@ -5,7 +5,7 @@
 //import org.springframework.stereotype.Component;
 //
 //@Component
-////@ConfigurationPropertiesBinding
+////@ConfigurationPropertiesBinding - done automatically in new Spring version
 //public class ProjectDtoConverter implements Converter<String, ProjectDTO> {
 //
 //    ProjectService projectService;
