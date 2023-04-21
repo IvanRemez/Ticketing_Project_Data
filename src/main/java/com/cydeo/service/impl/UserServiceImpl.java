@@ -65,4 +65,15 @@ public class UserServiceImpl implements UserService {
 
         return findByUserName(user1.getUserName());
     }
+
+    @Override
+    public void delete(String username) {
+    // ^^ used delete from UI while still keeping User in DB:
+// go to DB and find User by username
+        User user = userRepository.findByUserName(username);
+// change isDeleted field to true
+        user.setIsDeleted(true);
+// save the Object in DB
+        userRepository.save(user);
+    }
 }
