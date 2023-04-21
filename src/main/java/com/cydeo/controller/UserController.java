@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping("/create")
     public String insertUser(@ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
-                            // ^^ @Valid removed
+                            // ^^ @Valid removed for testing
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("roles", roleService.listAllRoles());
@@ -62,7 +62,7 @@ public class UserController {
 
     @PostMapping("/update")
     public String updateUser(@ModelAttribute("user") UserDTO user, BindingResult bindingResult, Model model) {
-                            // ^^ @Valid removed
+                            // ^^ @Valid removed for testing
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("roles", roleService.listAllRoles());

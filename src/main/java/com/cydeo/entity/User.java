@@ -26,8 +26,10 @@ public class User extends BaseEntity {
     private String passWord;
     private boolean enabled;
     private String phone;
+
     @ManyToOne  // many Users can have the same Role
     private Role role;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
