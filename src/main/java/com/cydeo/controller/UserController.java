@@ -30,7 +30,6 @@ public class UserController {
         model.addAttribute("users", userService.listAllUsers());
 
         return "/user/create";
-
     }
 
     @PostMapping("/create")
@@ -46,7 +45,6 @@ public class UserController {
         userService.save(user);
 
         return "redirect:/user/create";
-
     }
 
     @GetMapping("/update/{username}")
@@ -57,7 +55,6 @@ public class UserController {
         model.addAttribute("users", userService.listAllUsers());
 
         return "/user/update";
-
     }
 
     @PostMapping("/update")
@@ -69,13 +66,10 @@ public class UserController {
             model.addAttribute("users", userService.listAllUsers());
 
             return "/user/update";
-
         }
-
         userService.update(user);
 
         return "redirect:/user/create";
-
     }
 
     @GetMapping("/delete/{username}")
@@ -84,5 +78,4 @@ public class UserController {
         userService.delete(username);
         return "redirect:/user/create";
     }
-
 }
