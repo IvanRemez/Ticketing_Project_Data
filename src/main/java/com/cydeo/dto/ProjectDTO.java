@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ProjectDTO {
 
+    private Long id;  // needed as foreign Key for Mapper when creating new Task
+
     @NotBlank
     private String projectName;
 

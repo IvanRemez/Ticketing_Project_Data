@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @Where(clause = "is_deleted=false")
 public class Project extends BaseEntity {
 
+    @Column(unique = true)  // prevents creation of new Projects with the same code
+                    // needed validation since we are using projectCode as our id
     private String projectCode;
     private String projectName;
 
