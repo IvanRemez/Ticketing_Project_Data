@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 @Where(clause = "is_deleted=false")
 // ^^ adds this WHERE clause to each User entity method in your App
 // (including JPA standard methods)
+// ** when soft deleting, your data remains in DB but this clause ignores the deleted
+// Entities when marked true (prevents queries from bringing these objects to the UI)
 public class User extends BaseEntity {
 
     private String firstName;
