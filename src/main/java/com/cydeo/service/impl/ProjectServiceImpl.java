@@ -81,7 +81,16 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = projectRepository.findByProjectCode(code);
         project.setIsDeleted(true);
+
+        project.setProjectCode(project.getProjectCode() + "-" + project.getId());
+    // ^^ keeps this altered Project code in DB for future reference while allowing for
+    // creation of the same Project code
+
         projectRepository.save(project);
+
+        taskService.deleteByProject(projectMapper.convertToDto(project));
+    // ^^ deletes tasks associated with Project (DTO b/c we want it as a service which can be
+    // implemented in other areas of app)
     }
 
     @Override
@@ -90,6 +99,8 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findByProjectCode(code);
         project.setProjectStatus(Status.COMPLETE);
         projectRepository.save(project);
+
+        taskService.completeByProject(projectMapper.convertToDto(project));
     }
 
     @Override
