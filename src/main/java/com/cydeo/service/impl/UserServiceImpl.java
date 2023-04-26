@@ -1,10 +1,15 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.ProjectDTO;
+import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.UserRepository;
+import com.cydeo.service.ProjectService;
+import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +21,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final ProjectService projectService;
+    private final TaskService taskService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper,
+                           @Lazy ProjectService projectService, @Lazy TaskService taskService) {
+                        // ^^ fixes circular dependency error due to injections in both classes
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.projectService = projectService;
+        this.taskService = taskService;
     }
 
     @Override
@@ -71,10 +82,15 @@ public class UserServiceImpl implements UserService {
     // ^^ used delete from UI while still keeping User in DB:
 // go to DB and find User by username
         User user = userRepository.findByUserName(username);
-// change isDeleted field to true
-        user.setIsDeleted(true);
-// save the Object in DB
-        userRepository.save(user);
+// check if User can be deleted:
+        if (checkIfUserCanBeDeleted(user)) {
+        // change isDeleted field to true
+            user.setIsDeleted(true);
+        // save the Object in DB
+            userRepository.save(user);
+        }
+        // no else, just won't be able to delete User
+        // can throw an exception in the future
     }
 
     @Override
@@ -84,5 +100,23 @@ public class UserServiceImpl implements UserService {
 
         return users.stream()
                 .map(userMapper::convertToDto).collect(Collectors.toList());
+    }
+
+    private boolean checkIfUserCanBeDeleted(User user) {
+
+        switch (user.getRole().getDescription()) {
+            case "Manager":
+                List<ProjectDTO> projectDTOList = projectService
+                        .listAllNonCompletedByAssignedManager(userMapper.convertToDto(user));
+                return projectDTOList.size() == 0;
+            // ^^ if Manager has no uncompleted projects (true) we are able to delete Manager
+            case "Employee":
+                List<TaskDTO> taskDTOList = taskService
+                        .listAllNonCompletedByAssignedEmployee(userMapper.convertToDto(user));
+                return taskDTOList.size() == 0;
+            // ^^ if Employee has no uncompleted tasks (true) we are able to delete Employee
+            default:
+                return true;
+        }
     }
 }
