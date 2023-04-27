@@ -83,8 +83,8 @@ public class ProjectServiceImpl implements ProjectService {
         project.setIsDeleted(true);
 
         project.setProjectCode(project.getProjectCode() + "-" + project.getId());
-    // ^^ keeps this altered Project code in DB for future reference while allowing for
-    // creation of the same Project code
+    // ^^ keeps this altered Project code in DB for future reference while
+        // allowing for creation of the same Project code in the future
 
         projectRepository.save(project);
 

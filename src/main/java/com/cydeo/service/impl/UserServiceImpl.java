@@ -10,7 +10,6 @@ import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +35,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> listAllUsers() {
 
-        List<User> userList = userRepository.findAll(Sort.by("firstName"));
+        List<User> userList = userRepository
+                .findAllByIsDeletedOrderByFirstNameDesc(false);
 
         return userList.stream()
                 .map(userMapper::convertToDto).collect(Collectors.toList());
@@ -45,7 +45,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findByUserName(String username) {
 
-        User user = userRepository.findByUserName(username);
+        User user = userRepository.findByUserNameAndIsDeleted(
+                username, false);
 
         return userMapper.convertToDto(user);
     }
@@ -55,16 +56,17 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userMapper.convertToEntity(user));
     }
 
-    @Override
-    public void deleteByUserName(String username) {
-
-        userRepository.deleteByUserName(username);
-    }
+//    @Override
+//    public void deleteByUserName(String username) {     // HARD delete - NOT used
+//
+//        userRepository.deleteByUserName(username);
+//    }
 
     @Override
     public UserDTO update(UserDTO user) {
 // find current user
-        User user1 = userRepository.findByUserName(user.getUserName());
+        User user1 = userRepository
+                .findByUserNameAndIsDeleted(user.getUserName(), false);
         // ^^ has ID
 // Map updated UserDTO to Entity object
         User convertedUser = userMapper.convertToEntity(user);
@@ -81,11 +83,16 @@ public class UserServiceImpl implements UserService {
     public void delete(String username) {
     // ^^ used delete from UI while still keeping User in DB:
 // go to DB and find User by username
-        User user = userRepository.findByUserName(username);
+        User user = userRepository
+                .findByUserNameAndIsDeleted(username, false);
 // check if User can be deleted:
         if (checkIfUserCanBeDeleted(user)) {
         // change isDeleted field to true
             user.setIsDeleted(true);
+            user.setUserName(user.getUserName() + "-" + user.getId());
+        // ^^ keeps this altered username in DB for future reference while
+            // allowing for creation of the same username in the future
+
         // save the Object in DB
             userRepository.save(user);
         }
@@ -96,7 +103,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> listAllByRole(String role) {
 
-        List<User> users = userRepository.findByRoleDescriptionIgnoreCase(role);
+        List<User> users = userRepository
+                .findByRoleDescriptionIgnoreCaseAndIsDeleted(role, false);
 
         return users.stream()
                 .map(userMapper::convertToDto).collect(Collectors.toList());

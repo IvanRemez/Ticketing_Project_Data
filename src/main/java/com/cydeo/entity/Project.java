@@ -15,6 +15,11 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "projects")
 @Where(clause = "is_deleted=false")
+// ^^ adds this WHERE clause to each User entity method in your App
+// (including JPA standard methods)
+// ** when soft deleting, your data remains in DB but this clause ignores the deleted
+// Entities when marked true (prevents queries from bringing these objects to the UI)
+
 public class Project extends BaseEntity {
 
     @Column(unique = true)  // prevents creation of new Projects with the same code

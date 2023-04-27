@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @Where(clause = "is_deleted=false")
 // ^^ when soft deleting, your data remains in DB but this clause ignores the deleted
 // Entities when marked true (prevents queries from bringing these objects to the UI)
+
 public class Task extends BaseEntity {
 
     private String taskSubject;
