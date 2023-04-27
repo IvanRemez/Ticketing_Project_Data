@@ -36,8 +36,8 @@ public class ProjectController {
     }
 
     @PostMapping("/create")
-    public String insertProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
-                            // ^^ @Valid removed for testing
+    public String insertProject(@Valid @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
+
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("managers", userService.listAllByRole("manager"));
@@ -76,8 +76,8 @@ public class ProjectController {
     }
 
     @PostMapping("/update")
-    public String updateProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
-                            // ^^ @Valid removed for testing
+    public String updateProject(@Valid @ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
+
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("managers", userService.listAllByRole("manager"));
